@@ -105,25 +105,30 @@ class Melon(object):
         self.sellable = bool()
 
     def is_sellable(self):
-        if self.shape_rating > 5 && self.color_rating > 5 && self.field != 3:
+        if self.shape_rating > 5 and self.color_rating > 5 and self.field != 3:
             self.sellable = True
+            return True
         else:
             self.sellable = False
+            return False
+
 
 def make_melons(melon_types):
     """Returns a list of Melon objects."""
 
     # Fill in the rest
+    melon_dict = make_melon_type_lookup(make_melon_types())
+    
     all_melon_types = []
-    melon_1 = Melon('yw',8,7,2,'Sheila')
-    melon_2 = Melon('yw',3,4,2,'Sheila')
-    melon_3 = Melon('yw',9,8,3,'Sheila')
-    melon_4 = Melon('cas',10,6,35,'Sheila')
-    melon_5 = Melon('cren',8,9,35,'Michael')
-    melon_6 = Melon('cren',8,2,35,'Michael')
-    melon_7 = Melon('cren',2,3,4,'Michael')
-    melon_8 = Melon('musk',6,7,4,'Michael')
-    melon_9 = Melon('yw',7,10,3,'Sheila')
+    melon_1 = Melon(melon_dict['yw'],8,7,2,'Sheila')
+    melon_2 = Melon(melon_dict['yw'],3,4,2,'Sheila')
+    melon_3 = Melon(melon_dict['yw'],9,8,3,'Sheila')
+    melon_4 = Melon(melon_dict['cas'],10,6,35,'Sheila')
+    melon_5 = Melon(melon_dict['cren'],8,9,35,'Michael')
+    melon_6 = Melon(melon_dict['cren'],8,2,35,'Michael')
+    melon_7 = Melon(melon_dict['cren'],2,3,4,'Michael')
+    melon_8 = Melon(melon_dict['musk'],6,7,4,'Michael')
+    melon_9 = Melon(melon_dict['yw'],7,10,3,'Sheila')
 
     all_melon_types.append(melon_1)
     all_melon_types.append(melon_2)
@@ -144,6 +149,31 @@ def get_sellability_report(melons):
     """Given a list of melon object, prints whether each one is sellable."""
 
     # Fill in the rest 
+    for melon in melons:
+
+        if melon.is_sellable():
+            sellability = "CAN BE SOLD"
+        else:
+            sellability = "NOT SELLABLE"
+
+        print("Harvested by {} from Field {} ({})".format(melon.harvester,melon.field,sellability))
 
 
+get_sellability_report(make_melons(make_melon_types()))
 
+
+def open_file(filename):
+    file = open(filename)
+    melon_dict = make_melon_type_lookup(make_melon_types())
+    harvest_log_list = []
+    n = 10000
+    for line in file:
+        line = line.rstrip()
+        line = line.split(" ")
+        name = "melon" + str(n)
+        name = Melon(melon_dict[line[5]], line[1],line[3],line[-1],line[-4])
+        n += 1
+        harvest_log_list.append(name)
+    return harvest_log_list
+
+print(open_file("harvest-log.txt"))
